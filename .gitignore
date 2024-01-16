@@ -23,6 +23,7 @@
 !/tmp/pids/.keep
 
 /coverage/*
+.DS_Store
 
 # Ignore storage (uploaded files in development and any SQLite databases).
 /storage/*
