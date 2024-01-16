@@ -2,6 +2,8 @@ source "https://rubygems.org"
 
 ruby "3.2.2"
 
+gem 'activeadmin', '~> 3'
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.2"
 
@@ -18,6 +20,7 @@ gem "puma", "~> 6"
 gem "importmap-rails", '~> 2'
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
+gem "sassc-rails", '~> 2'
 gem "turbo-rails", '~> 1'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
@@ -47,6 +50,7 @@ gem "bootsnap", "~> 1", require: false
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", "~> 1", platforms: %i[ mri windows ]
+  gem "factory_bot_rails", '~> 6'
   gem 'rspec-rails', '~> 6'
 end
 
