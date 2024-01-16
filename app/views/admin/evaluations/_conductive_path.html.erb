@@ -1,0 +1,9 @@
+<table class="conductive_path">
+  <% @evaluation.treated_grid.each_with_index do |row, i| %>
+    <tr>
+      <% row.each_with_index do |column, j| %>
+        <td class="<%= 'active' if conductive_path.positions.include?([i, j]) %>"><%= column %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

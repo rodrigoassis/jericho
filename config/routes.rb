@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  root to: "admin/dashboard#index"
+  root to: "admin/evaluations#index"
   ActiveAdmin.routes(self)
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
