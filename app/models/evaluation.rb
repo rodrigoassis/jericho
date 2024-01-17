@@ -5,16 +5,23 @@ class Evaluation < ApplicationRecord
   has_many :conductive_paths
 
   after_create :generate_conductive_paths
+  before_validation :text_content_to_grid
 
   default_scope { includes(:conductive_paths) }
+
+  mount_uploader :grid_file, GridFileUploader
 
   def grid_format
     return unless grid.present?
 
     errors.add(:grid, 'must be made of 0s and 1s') unless (grid.split('') - ['1'] - ['0'] - ["\r"] - ["\n"]).blank?
 
-    rows = grid.split("\r\n")
-    errors.add(:grid, 'must be NxN') if rows.any? { |row| row.size != rows.size }
+    rows = grid.split("\n").map(&:chomp)
+    errors.add(:grid, 'must be NxN') if rows.any? { |row| row.chomp.size != rows.size }
+  end
+
+  def text_content_to_grid
+    self.grid = File.read(grid_file.path) if grid_file.present?
   end
 
   def self.ransackable_attributes(auth_object = nil)
@@ -26,7 +33,7 @@ class Evaluation < ApplicationRecord
   end
 
   def treated_grid
-    grid.split("\r\n").map { |row| row.split('').map(&:to_i) }
+    grid.split("\n").map(&:chomp).map { |row| row.split('').map(&:to_i) }
   end
 
   private

@@ -9,6 +9,10 @@ ActiveAdmin.register Evaluation do
     f.semantic_errors
     f.inputs do
       input :grid
+
+      li "Or upload a .txt file"
+
+      input :grid_file
     end
     f.actions
   end
@@ -18,6 +22,9 @@ ActiveAdmin.register Evaluation do
       row :result
       row "Grid" do |evaluation|
         simple_format(evaluation.grid)
+      end
+      row "Grid File" do |evaluation|
+        link_to(evaluation.grid_file&.identifier, evaluation.grid_file&.url, target: '_blank') if evaluation.grid_file.present?
       end
       row :created_at
     end
@@ -36,6 +43,9 @@ ActiveAdmin.register Evaluation do
     column "Conductive Paths Count" do |evaluation|
       evaluation.conductive_paths.size
     end
+    column "Grid File" do |evaluation|
+      link_to(evaluation.grid_file&.identifier, evaluation.grid_file&.url, target: '_blank') if evaluation.grid_file.present?
+    end
     column :created_at
     actions
   end
@@ -45,7 +55,7 @@ ActiveAdmin.register Evaluation do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :grid
+  permit_params :grid, :grid_file
   #
   # or
   #
