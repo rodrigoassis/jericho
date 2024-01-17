@@ -11,6 +11,16 @@ class Evaluation < ApplicationRecord
 
   mount_uploader :grid_file, GridFileUploader
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "grid", "id", "id_value", "result", "updated_at"]
+  end
+
+  def treated_grid
+    grid.split("\n").map(&:chomp).map { |row| row.split('').map(&:to_i) }
+  end
+
+  private
+
   def grid_format
     return unless grid.present?
 
@@ -24,31 +34,13 @@ class Evaluation < ApplicationRecord
     self.grid = File.read(grid_file.path) if grid_file.present?
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "grid", "id", "id_value", "result", "updated_at"]
-  end
-
-  def self.ransackable_associations(auth_object = nil)
-    ["conductive_paths"]
-  end
-
-  def treated_grid
-    grid.split("\n").map(&:chomp).map { |row| row.split('').map(&:to_i) }
-  end
-
-  private
-
   def generate_conductive_paths
-    # Initialize a 2D array to track positions visited
-    positions = []
-
     cols = treated_grid.size
+
     # Iterate through the top edge cells and check for conductive path
     (0...cols).each do |col|
-      if dfs(0, col, positions, treated_grid)
-        positions = []
-        update(result: true)
-      end
+      positions = [] # Initialize a 2D array to track positions visited
+      update(result: true) if dfs(0, col, positions, treated_grid)
     end
   end
 
@@ -57,8 +49,8 @@ class Evaluation < ApplicationRecord
     rows = grid.length
     cols = grid[0].length
 
-    return false if row < 0 || row >= rows || col < 0 || col >= cols
-    return false if positions.include?([row, col]) || grid[row][col] == 0
+    return false if row < 0 || row >= rows || col < 0 || col >= cols # out of grid limits
+    return false if positions.include?([row, col]) || grid[row][col] == 0 # has already been visited or has no path
 
     positions << [row, col]
 
@@ -69,7 +61,7 @@ class Evaluation < ApplicationRecord
     end
 
     # Recursive DFS in all four directions
-    directions = [[1, 0], [0, 1], [-1, 0], [0, -1]]
+    directions = [[1, 0], [0, 1], [-1, 0], [0, -1]] # try down, right, up, left in this order
     directions.each do |dr, dc|
       new_row, new_col = row + dr, col + dc
       return true if dfs(new_row, new_col, positions, grid)
