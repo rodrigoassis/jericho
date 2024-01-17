@@ -42,3 +42,5 @@ rails db:create db:migrate
 ```shell
 rails s
 ```
+
+Now you can use your favourite browser and access [localhost:3000](http://localhost:3000)
