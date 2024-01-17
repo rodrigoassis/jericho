@@ -8,7 +8,7 @@ ActiveAdmin.register Evaluation do
   form do |f|
     f.semantic_errors
     f.inputs do
-      input :grid
+      input :grid, hint: "<a href='#' id='random_grid'>Generate random grid</a>".html_safe
 
       li "Or upload a .txt file"
 
